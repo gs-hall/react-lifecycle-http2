@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { getList, addItem } from "../http/entityList";
+import { getList, addItem, deleteItem } from "../http/entityList";
 import Note from "./Note";
 import NoteForm from "./NoteForm";
-import { Oval } from 'react-loader-spinner';
-import Icon from "./Icon";
+import LoadingButton from "./LoadingButton";
 
 export default function Notes() {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,10 +17,10 @@ export default function Notes() {
       return;
     }    
     setIsLoading(true);
+    setIsError(false);
     getList().then(
       items => {
         if(isMounted.current) {
-          console.log('loaded');
           setNotes(items.data);
           setIsLoading(false);
           setIsRefreshRequired(false);
@@ -35,22 +34,12 @@ export default function Notes() {
     return () => isMounted.current = false;
   }, [notes, isRefreshRequired]);
 
-  /*
-  useEffect(() => {
-    if(isAdded) {
-      setTimeout(() => {
-        setIsAdded(false);
-      }, 1000)
-    }
-  }, [isAdded]);
-  */
-
   const addNote = (note) => {
     //setNotes([...notes, note]);
+    setIsLoading(true);
     addItem(note)
       .then((response) => {
         if(isMounted.current) {
-          console.log('added');
           setIsRefreshRequired(true);
         }
       })
@@ -59,40 +48,33 @@ export default function Notes() {
       });
   };
 
-  const handleRefresh  = () => {
+  const handleRefresh = () => {
+    setIsRefreshRequired(true);
+  };
+
+  const handleDelete = (id) => {
+    setIsLoading(true);
+    deleteItem(id);
     setIsRefreshRequired(true);
   };
 
   return (
     <div>
       <div className="header">
-      <h1>Notes</h1>
-    
-        <button onClick={handleRefresh} className="refresh">
-          {
-            !isLoading &&
-            <Icon icon="fa-refresh" addClassName="refresh" />
-          }
-          {isLoading &&
-            <Oval
-              height={10}
-              width={10}
-              color="#4fa94d"
-              wrapperStyle={{}}
-              wrapperClass=""
-              visible={true}
-              ariaLabel='oval-loading'
-              secondaryColor="#4fa94d"
-              strokeWidth={2}
-              strokeWidthSecondary={2}
-            />
-          }
-        </button>
+        <h1>Notes</h1>
+        <LoadingButton
+          onClick={handleRefresh}
+          className="refresh"
+          isLoading={isLoading}
+          icon="fa-refresh"
+          color="#4fa94d"
+        />
+        {isError && <h3 className="error">Something went wrong...</h3>}
       </div>
       <div className="notes">
-        {notes?.map((note, index) => <Note key={index} note={note} />)}
+        {notes?.map((note, index) => <Note key={index} note={note} onDelete={handleDelete} />)}
       </div>
-      <NoteForm add={addNote}/>
+      <NoteForm add={addNote} isLoading={isLoading} />
     </div>
   ); 
 };
