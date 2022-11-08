@@ -1,0 +1,50 @@
+div.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+button.refresh {
+  display: flex;
+  justify-content: center;
+  height: 20px;
+  width: 30px;
+}
+
+i.refresh {
+  color: #4fa94d;  
+}
+
+div.notes {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+div.note {
+  border: 1px;
+  border-style: dashed;
+  border-color: #bbb;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+i.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  cursor: pointer;
+  background: white;
+}
