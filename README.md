@@ -1,2 +1,2 @@
-# netology-react-lifecycle-http2
+# react-lifecycle-http2
 CRUD
